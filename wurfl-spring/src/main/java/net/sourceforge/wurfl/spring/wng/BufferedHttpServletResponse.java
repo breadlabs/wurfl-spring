@@ -1,4 +1,4 @@
-package net.sourceforge.wurfl.spring;
+package net.sourceforge.wurfl.spring.wng;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

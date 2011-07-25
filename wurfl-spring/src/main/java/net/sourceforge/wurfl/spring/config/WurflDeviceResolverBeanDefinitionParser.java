@@ -1,4 +1,4 @@
-package net.sourceforge.wurfl.spring;
+package net.sourceforge.wurfl.spring.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;

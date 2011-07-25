@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="overview"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Wurfl Spring</title>
+
+  			<section id="wurfl-device-resolver">
+  				<title>WurflDeviceResolver</title>
+  				<para>
+  					WURFL provides a Java API as well as a large database of devices and their capabilities.
+  					It is useful when you need to know more about the Device that originated the request, such as its specific screen size, manufacturer, model, preferred markup, or other capabilities.
+  				</para>
+  				<para>
+  					To use, first make sure the WURFL Java API is in your classpath:
+  					<programlisting language="xml"><![CDATA[
+  <dependency>
+      <groupId>net.sourceforge.wurfl</groupId>
+      <artifactId>wurfl</artifactId>
+      <version>${net.sourceforge.wurfl-version}</version>
+  </dependency>]]>
+  					</programlisting>
+  				</para>
+  				<para>
+  					Then include the wurfl-spring XML namespace and use the device-resolver tag:
+  					<programlisting language="xml"><![CDATA[
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans:beans xmlns="http://www.springframework.org/schema/mvc"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:beans="http://www.springframework.org/schema/beans"
+      xmlns:wurfl="http://wurfl.sourceforge.net/schema/wurfl"
+      xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://wurfl.sourceforge.net/schema/wurfl http://wurfl.sourceforge.net/schema/wurf-spring-1.0.xsd">
+
+      <interceptors>
+          <!-- On pre-handle, use WURFL to detect the device that originated the web request -->
+          <beans:bean class="org.springframework.mobile.device.mvc.DeviceResolverHandlerInterceptor">
+              <beans:constructor-arg>
+              	  <!-- Inject a WurflDeviceResolver that populates its device repository from the specified file locations -->
+                  <wurfl:device-resolver root-location="/WEB-INF/wurfl/wurfl-2.0.28.zip" patch-locations="/WEB-INF/wurfl/web_browsers_patch.xml" />
+              </beans:constructor-arg>		
+          </beans:bean>
+      </interceptors>
+
+  </beans:beans>]]>
+  					</programlisting>
+  				</para>
+  				<para>
+  					Read more about WURFL at <ulink url="http://wurfl.sourceforge.net">http://wurfl.sourceforge.net</ulink>.
+  					Checkout the wurfl-showcase for a live demonstration.
+  					This sample illustrates WURFL-based device detection as well as the use of the WNG tag library to perform multi-serving from common page markup.
+  				</para>
+  			</section>	
+  		</section>
+  	</section>
+
+</chapter>

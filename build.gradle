@@ -1,0 +1,123 @@
+import org.springframework.build.Version
+
+// -----------------------------------------------------------------------------
+// Main gradle build file for Spring Mobile Device Wurfl
+// @author Keith Donald
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// Configuration for the root project
+// -----------------------------------------------------------------------------
+description = 'Wurfl Spring Integration'
+abbreviation = 'WURFL'
+
+apply plugin: 'base'
+apply plugin: 'idea'
+
+def buildSrcDir = "$rootDir/buildSrc"
+apply from: "$buildSrcDir/wrapper.gradle"
+apply from: "$buildSrcDir/maven-root-pom.gradle"
+
+// -----------------------------------------------------------------------------
+// Configuration for all projects including this one (the root project)
+// @see settings.gradle for list of all projects
+// -----------------------------------------------------------------------------
+allprojects {
+    // group will translate to groupId during pom generation and deployment
+    group = 'net.sourceforge.wurfl'
+
+    // version will be used in maven pom generation as well as determining
+    // where artifacts should be deployed, based on release type of snapshot,
+    // milestone or release.
+    // @see org.springframework.build.Version under buildSrc/ for more info
+    // @see gradle.properties for the declaration of this property.
+    version = new Version(WurflSpringVersion)
+
+    // default set of maven repositories to be used when resolving dependencies
+    repositories {
+        mavenRepo urls: 'http://dev.scientiamobile.com/nexus/content/repositories/public-releases'
+        mavenRepo urls: 'http://no-commons-logging.zapto.org/mvn2'
+        mavenRepo urls: 'http://maven.springframework.org/release'
+        mavenRepo urls: 'http://maven.springframework.org/milestone'
+        mavenRepo urls: 'http://maven.springframework.org/snapshot'
+        mavenCentral()
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Create collection of subprojects - each will receive their own configuration
+// - all subprojects that start with wurfl-spring-* are 'java projects'
+// - documentation-related projects are not collected here
+//
+// @see configure(*) sections below
+// -----------------------------------------------------------------------------
+javaprojects = subprojects.findAll { project ->
+    project.path.startsWith(':wurfl-spring')
+}
+
+// -----------------------------------------------------------------------------
+// Configuration for all java projects
+// -----------------------------------------------------------------------------
+configure(javaprojects) {
+
+    apply plugin: 'java'     // tasks for conventional java lifecycle
+    apply plugin: 'maven'    // `gradle install` to push jars to local .m2 cache
+    apply plugin: 'eclipse'  // `gradle eclipse` to generate .classpath/.project
+    apply plugin: 'idea'     // `gradle idea` to generate .ipr/.iml
+
+    // ensure JDK 5 compatibility
+    sourceCompatibility=1.5
+    targetCompatibility=1.5
+
+    // set up dedicated directories for jars and source jars.
+    // this makes it easier when putting together the distribution
+    libsBinDir = new File(libsDir, 'bin')
+    libsSrcDir = new File(libsDir, 'src')
+
+    // add tasks for creating source jars and generating poms etc
+    apply from: "$buildSrcDir/maven-deployment.gradle"
+
+    // add tasks for finding and publishing .xsd files
+    apply from: "$buildSrcDir/schema-publication.gradle"
+
+    junitVersion = '4.7'
+    log4jVersion = '1.2.16'
+    springVersion = '3.0.5.RELEASE'
+    springMobileVersion = '1.0.0.BUILD-SNAPSHOT'
+
+    // dependencies that are common across all java projects
+    dependencies {
+        testCompile "junit:junit:$junitVersion"
+        testCompile "log4j:log4j:$log4jVersion"
+        testCompile "org.springframework:spring-test:$springVersion"
+    }
+
+    // enable all compiler warnings (GRADLE-1077)
+    [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
+
+    // generate .classpath files without GRADLE_CACHE variable (GRADLE-1079)
+    eclipseClasspath.variables = [:]
+}
+
+project('wurfl-spring') {
+    description = 'WURFL Spring Integration'
+    dependencies {
+        compile "org.springframework.mobile:spring-mobile-device:$springMobileVersion"
+        compile ("net.sourceforge.wurfl:wurfl:1.3.1") { optional = true }
+        compile ("net.sourceforge.wurfl:wng:1.0.1-rc2") {
+            optional = true
+            exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
+        }
+        compile ("javax.servlet:servlet-api:2.5") { provided = true }        
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Configuration for the docs subproject
+// -----------------------------------------------------------------------------
+project('docs') {
+    apply from: "$buildSrcDir/docs.gradle"
+}
+
+apply from: "$buildSrcDir/dist.gradle"
+apply from: "$buildSrcDir/checks.gradle"

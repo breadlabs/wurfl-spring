@@ -1,0 +1,4 @@
+rootProject.name = 'wurfl-spring'
+
+include 'docs'
+include 'wurfl-spring'

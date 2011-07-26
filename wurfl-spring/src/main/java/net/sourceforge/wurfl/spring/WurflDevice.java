@@ -11,6 +11,7 @@ import org.springframework.mobile.device.Device;
  * WURFL-based {@link Device} implementation.
  * Also implements net.sourceforge.wurfl.core.Device, exposing the full capabilities of the WURFL API.
  * @author Keith Donald
+ * @author Roy Clarkson
  */
 public class WurflDevice implements Device, net.sourceforge.wurfl.core.Device {
 
@@ -60,6 +61,14 @@ public class WurflDevice implements Device, net.sourceforge.wurfl.core.Device {
 		builder.append("markup").append("=").append(getMarkUp());
 		builder.append("]");
 		return builder.toString();
+	}
+
+	public String getDeviceRootId() {
+		return device.getDeviceRootId();
+	}
+
+	public boolean isActualDeviceRoot() {
+		return device.isActualDeviceRoot();
 	}
 
 }

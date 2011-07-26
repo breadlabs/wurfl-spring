@@ -6,9 +6,8 @@ import net.sourceforge.wurfl.core.DefaultDeviceProvider;
 import net.sourceforge.wurfl.core.DefaultWURFLManager;
 import net.sourceforge.wurfl.core.DefaultWURFLService;
 import net.sourceforge.wurfl.core.WURFLManager;
-import net.sourceforge.wurfl.core.handlers.matchers.MatcherManager;
+import net.sourceforge.wurfl.core.matchers.MatcherManager;
 import net.sourceforge.wurfl.core.resource.DefaultWURFLModel;
-import net.sourceforge.wurfl.core.resource.SpringXMLResource;
 import net.sourceforge.wurfl.core.resource.WURFLResources;
 
 import org.springframework.beans.factory.FactoryBean;
@@ -20,6 +19,7 @@ import org.springframework.util.Assert;
  * Factory that constructs the central {@link WURFLManager} and exports it as a Spring bean that can be injected into other beans.
  * The specifics of this factory class are hidden when working with the wurfl-device-resolver tag in the wurfl-spring XML namespace.
  * @author Keith Donald
+ * @author Roy Clarkson
  */
 public class WurflManagerFactoryBean implements FactoryBean<WURFLManager>, InitializingBean {
 
@@ -79,8 +79,8 @@ public class WurflManagerFactoryBean implements FactoryBean<WURFLManager>, Initi
 		return new DefaultWURFLManager(service);		
 	}
 
-	private SpringXMLResource getRoot() {
-		return new SpringXMLResource(rootLocation);
+	private SpringXMLResourceAdapter getRoot() {
+		return new SpringXMLResourceAdapter(rootLocation);
 	}
 	
 	private WURFLResources getPatches() {
@@ -89,7 +89,7 @@ public class WurflManagerFactoryBean implements FactoryBean<WURFLManager>, Initi
 		}
 		WURFLResources patches = new WURFLResources();
 		for (Resource patch : patchLocations) {
-			patches.add(new SpringXMLResource(patch));
+			patches.add(new SpringXMLResourceAdapter(patch));
 		}
 		return patches;
 	}

@@ -1,12 +1,13 @@
 package net.sourceforge.wurfl.spring.config;
 
+import net.sourceforge.wurfl.spring.WurflDeviceResolver;
+import net.sourceforge.wurfl.spring.WurflManagerFactoryBean;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.mobile.device.wurfl.WurflDeviceResolver;
-import org.springframework.mobile.device.wurfl.WurflManagerFactoryBean;
 import org.w3c.dom.Element;
 
 class WurflDeviceResolverBeanDefinitionParser extends AbstractBeanDefinitionParser {

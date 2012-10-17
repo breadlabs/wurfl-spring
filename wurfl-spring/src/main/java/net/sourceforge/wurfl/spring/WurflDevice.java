@@ -25,7 +25,16 @@ public class WurflDevice implements Device, net.sourceforge.wurfl.core.Device {
 	
 	public boolean isMobile() {
 		String capability = getCapability("is_wireless_device");
-		return capability != null && capability.length() > 0 && Boolean.valueOf(capability);
+		return capability != null && Boolean.valueOf(capability) && !isTablet();
+	}
+	
+	public boolean isTablet() {
+	    String capability = getCapability("is_tablet");
+	    return capability != null && Boolean.valueOf(capability);
+	}
+	
+	public boolean isNormal() {
+	    return !isMobile() && !isTablet();
 	}
 
 	// implementing Wurfl Device
